@@ -94,16 +94,38 @@ const inventoryReducer = createSlice({
         state.inventoryItems[index] = action.payload;
       }
     },
-    ADD_SHIPMENTS: (state, action) => {
-      state.inventoryItems = [
-        ...state.inventoryItems,
-        ...action.payload.addItems,
-      ];
+    ADD_SUPPLIER: (state, action) => {
+      state.suppliersItems = [...state.suppliersItems, action.payload.addItems];
+      console.log([...state.inventoryItems, action.payload.addItems]);
     },
-    REMOVE_SHIPMENT: (state, action) => {
-      state.inventoryItems = state.inventoryItems.filters(
+    REMOVE_SUPPLIER(state, action: PayloadAction<{ removeItemId: number }>) {
+      state.suppliersItems = state.suppliersItems.filter(
         (item: any) => item.id !== action.payload.removeItemId
       );
+    },
+    UPDATE_SUPPLIER(state, action) {
+      const index = state.suppliersItems.findIndex(
+        (item: any) => item.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.suppliersItems[index] = action.payload;
+      }
+    },
+    ADD_SHIPMENT: (state, action) => {
+      state.shipmentsItems = [...state.shipmentsItems, action.payload.addItems];
+    },
+    REMOVE_SHIPMENT(state, action: PayloadAction<{ removeItemId: number }>) {
+      state.shipmentsItems = state.shipmentsItems.filter(
+        (item: any) => item.id !== action.payload.removeItemId
+      );
+    },
+    UPDATE_SHIPMENT(state, action) {
+      const index = state.shipmentsItems.findIndex(
+        (item: any) => item.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.shipmentsItems[index] = action.payload;
+      }
     },
   },
 });

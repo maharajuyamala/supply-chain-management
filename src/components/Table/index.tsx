@@ -7,10 +7,11 @@ interface DataTableProps<T> {
   onAdd: (item: T) => void;
   onEdit: (item: T) => void;
   onDelete: (id: number) => void;
+  statusOptions?: string[];
 }
 
 const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
-  const { data, columns, onAdd, onEdit, onDelete } = props;
+  const { data, columns, onAdd, onEdit, onDelete, statusOptions = [] } = props;
 
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
   const [editItemValues, setEditItemValues] = useState<Partial<T>>({});
@@ -63,9 +64,25 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
     onDelete(id);
   };
 
-  const renderCell = (item: any, column: string, index: number) => {
+  const renderCell = (item: T, column: string, index: number) => {
     const key = Object.keys(item)[index];
     if (editingItemId === item.id) {
+      if (key === "status") {
+        return (
+          <select
+            name={key}
+            value={(editItemValues as any)[key] || ""}
+            onChange={handleInputChange}
+            className="w-full text-left"
+          >
+            {statusOptions?.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        );
+      }
       return (
         <input
           type="text"
