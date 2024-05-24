@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { filteredItems } from "../../LocalStorage/GlobalFunctions";
 
-const MultiSearchInput = ({ columns, setFilteredData, data }: any) => {
+const MultiSearchInput = ({
+  columns,
+  setFilteredData,
+  data,
+  orginalData,
+}: any) => {
   const placeholderText = `Search by ${columns.join(", ")}`;
   const handleSearch = (value: any) => {
     setQury(value);
@@ -16,9 +21,14 @@ const MultiSearchInput = ({ columns, setFilteredData, data }: any) => {
   const [query, setQury] = useState(params.get("search"));
 
   React.useEffect(() => {
+    console.log("Rtgfdcx");
     const params = new URLSearchParams(window.location.search);
-    setFilteredData(filteredItems(data, params.get("search")));
-  }, []);
+    if (params.get("search")) {
+      setFilteredData(filteredItems(data, params.get("search")));
+    } else {
+      setFilteredData(data);
+    }
+  }, [data]);
   return (
     <div className="px-5  flex">
       <input

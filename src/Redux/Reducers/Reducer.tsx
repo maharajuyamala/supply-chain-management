@@ -58,12 +58,13 @@ const inventoryReducer = createSlice({
       }
     },
     ADD_SUPPLIER: (state, action) => {
+      console.log(action);
       state.suppliersItems = [...state.suppliersItems, action.payload.addItems];
       saveState("suppliersItems", state.suppliersItems);
     },
     REMOVE_SUPPLIER(state, action: PayloadAction<{ removeItemId: number }>) {
       const removeSupplier = state.suppliersItems.filter(
-        (item: any) => item.id !== action.payload.removeItemId
+        (item: any) => item.id != action.payload.removeItemId
       );
       state.suppliersItems = removeSupplier;
       saveState("suppliersItems", removeSupplier);
@@ -74,7 +75,7 @@ const inventoryReducer = createSlice({
       );
       if (index !== -1) {
         state.suppliersItems[index] = action.payload;
-        saveState("suppliersItems", state.inventoryItems);
+        saveState("suppliersItems", state.suppliersItems);
       }
     },
     ADD_SHIPMENT: (state, action) => {

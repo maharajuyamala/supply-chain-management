@@ -4,9 +4,9 @@ import "./App.css";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import InventoryList from "./components/Inventory/InventoryList";
-import ShipmentList from "./components/Shipments/ShipmentsList";
-import SupplierList from "./components/SupplierList/SupplierList";
+import InventoryList from "./Pages/Inventory/InventoryList";
+import ShipmentList from "./Pages/Shipments/ShipmentsList";
+import SupplierList from "./Pages/SupplierList/SupplierList";
 import Navbar from "./components/Header/Navbar";
 function App() {
   return (

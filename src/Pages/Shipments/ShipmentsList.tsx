@@ -3,42 +3,28 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { inventoryActions } from "../../Redux/Reducers";
-import InventoryItemComponent from "./InventoryItem";
-import DataTable from "../Table";
-import { filteredItems } from "../../LocalStorage/GlobalFunctions";
-import { useParams } from "react-router-dom";
-import MultiSearchInput from "../MultiSearchComp/MultiSearchInput";
+import DataTable from "../../components/Table";
+import MultiSearchInput from "../../components/MultiSearchComp/MultiSearchInput";
 
 const InventoryList: React.FC = () => {
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
-  const [editItemValues, setEditItemValues] = useState<any>({
-    id: 0,
-    name: "",
-    sku: "",
-    quantity: 0,
-    warehouse: "",
-  });
-  const [newItemValues, setNewItemValues] = useState<any>({
-    id: 0,
-    name: "",
-    sku: "",
-    quantity: 0,
-    warehouse: "",
-  });
+  const [editItemValues, setEditItemValues] = useState<any>(null);
+  const [newItemValues, setNewItemValues] = useState<any>(null);
 
   const dispatch = useDispatch();
-  const { inventoryItems } = useSelector((state: any) => state);
-
+  const { shipmentsItems } = useSelector((state: RootState) => state);
+  console.log(shipmentsItems);
   const handleEdit = (itemId: any) => {
     setEditingItemId(itemId);
-    const itemToEdit = inventoryItems.find((item: any) => item.id === itemId);
+    const itemToEdit = shipmentsItems.find((item: any) => item.id === itemId);
     if (itemToEdit) {
       setEditItemValues({ ...itemToEdit });
     }
   };
 
   const handleSave = (data: any) => {
-    dispatch(inventoryActions.UPDATE_INVENTORY(data));
+    console.log(data);
+    dispatch(inventoryActions.UPDATE_SHIPMENT(data));
     setEditingItemId(null);
     setEditItemValues(null);
   };
@@ -70,30 +56,23 @@ const InventoryList: React.FC = () => {
 
   const handleAddNewItem = (data: any) => {
     console.log(data);
-    dispatch(inventoryActions.ADD_INVENTORY({ addItems: data }));
-    setNewItemValues({
-      id: 0,
-      name: "",
-      sku: "",
-      quantity: 0,
-      warehouse: "",
-    });
+    dispatch(inventoryActions.ADD_SHIPMENT({ addItems: data }));
+    setNewItemValues(null);
   };
 
   const handleDelete = (itemId: number) => {
-    dispatch(inventoryActions.REMOVE_INVENTORY({ removeItemId: itemId }));
+    dispatch(inventoryActions.REMOVE_SHIPMENT({ removeItemId: itemId }));
   };
-  const columns = ["ID", "item name", "SKU", "quantity", "warehouse"];
-  const [filteredData, setFilteredData] = useState(inventoryItems);
-
+  const columns = ["shipment ID", "origin", "destination", "status"];
+  const [filteredData, setFilteredData] = useState(shipmentsItems);
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold px-5">Inventory List</h2>
+        <h2 className="text-2xl font-semibold px-5">Shipment List</h2>
         <MultiSearchInput
           columns={columns}
           setFilteredData={setFilteredData}
-          data={inventoryItems}
+          data={shipmentsItems}
         />
       </div>
       <DataTable
@@ -102,7 +81,14 @@ const InventoryList: React.FC = () => {
         onAdd={handleAddNewItem}
         onEdit={handleSave}
         onDelete={handleDelete}
-        initialState={["id", "name", "sku", "quantity", "warehouse"]}
+        statusOptions={["In Transit", "Delivered", "Delayed"]}
+        initialState={[
+          "id",
+          "origin",
+          "destination",
+          "status",
+          "estimatedDelivery",
+        ]}
       />
     </div>
   );

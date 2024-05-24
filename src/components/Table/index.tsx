@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InventoryItem, ShipmentItem, SupplierItem } from "../Types";
 import { BiEditAlt } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
 import { createPortal } from "react-dom";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
+import Pagination from "../Pagination/Pagination";
 
 interface DataTableProps<T> {
   data: T[];
@@ -26,16 +27,32 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
     statusOptions = [],
     initialState,
   } = props;
+  const itemsPerPage = 5;
+  const gridTemplateColumns = `repeat(${
+    columns.length + 1
+  }, minmax(100px, 1fr))`;
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const params = new URLSearchParams(window.location.search);
 
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
   const [editItemValues, setEditItemValues] = useState<Partial<T>>({});
   const [newItemValues, setNewItemValues] = useState<Partial<T>>({});
+  const [addPopUp, setAddPopUp] = useState(false);
+  const [currentPage, setCurrentPage] = useState<any>(
+    JSON.parse(params.get("page") || "1")
+  );
 
   const handleEdit = (item: T) => {
     setEditingItemId(item.id);
     setEditItemValues(item);
   };
+  const handlePagination = (item: number) => {
+    setCurrentPage(item);
 
+    params.set("page", JSON.stringify(item));
+    const newUrl = `${window?.location?.pathname}?${params.toString()}`;
+    window.history.replaceState({}, "", newUrl);
+  };
   const handleSave = () => {
     if (editingItemId !== null) {
       onEdit(editItemValues as T);
@@ -75,12 +92,13 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
     setAddPopUp?.(false);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: any) => {
     onDelete(id);
   };
 
-  const renderCell = (item: T, column: string, index: number) => {
+  const renderCell = (item: any, column: string, index: number) => {
     const key = Object.keys(item)[index];
+    console.log(item[key]);
     if (editingItemId === item.id) {
       if (key === "status") {
         return (
@@ -112,10 +130,12 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
     }
   };
 
-  const gridTemplateColumns = `repeat(${
-    columns.length + 1
-  }, minmax(100px, 1fr))`;
-  const [addPopUp, setAddPopUp] = useState(false);
+  useEffect(() => {
+    console.log(
+      data.slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage)
+        .length
+    );
+  }, [currentPage]);
 
   return (
     <div className="p-4">
@@ -134,55 +154,68 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
           </div>
         </div>
         {data?.length > 0 ? (
-          data.map((item) => (
-            <div key={item.id} className="grid" style={{ gridTemplateColumns }}>
-              {columns.map((column, index) => (
-                <div
-                  key={column}
-                  className="py-2 px-4 border-b border-gray-200 text-left"
-                >
-                  {renderCell(item, column, index)}
+          data
+            .slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage)
+            ?.map((item, index) => (
+              <div
+                key={`${index}_data`}
+                className="grid"
+                style={{ gridTemplateColumns }}
+              >
+                {columns.map((column, index) => (
+                  <div
+                    key={column}
+                    className="py-2 px-4 border-b border-gray-200 text-left"
+                  >
+                    {renderCell(item, "", index)}dfsc
+                  </div>
+                ))}
+                <div className="py-2 px-4 border-b border-gray-200 text-left">
+                  {editingItemId === item.id ? (
+                    <div className="flex gap-3">
+                      <button
+                        onClick={handleSave}
+                        className="mr-2 text-black py-1 rounded"
+                      >
+                        <IoCheckmarkOutline />
+                      </button>
+                      <button
+                        onClick={handleCancel}
+                        className="mr-2 text-black py-1 rounded"
+                      >
+                        <RxCross1 size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="mr-2 text-black py-1 rounded"
+                      >
+                        <BiEditAlt />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item?.id)}
+                        className="text-black py-1 rounded"
+                      >
+                        <MdDeleteOutline />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              ))}
-              <div className="py-2 px-4 border-b border-gray-200 text-left">
-                {editingItemId === item.id ? (
-                  <div className="flex gap-3">
-                    <button
-                      onClick={handleSave}
-                      className="mr-2 text-black py-1 rounded"
-                    >
-                      <IoCheckmarkOutline />
-                    </button>
-                    <button
-                      onClick={handleCancel}
-                      className="mr-2 text-black py-1 rounded"
-                    >
-                      <RxCross1 size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => handleEdit(item)}
-                      className="mr-2 text-black py-1 rounded"
-                    >
-                      <BiEditAlt />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="text-black py-1 rounded"
-                    >
-                      <MdDeleteOutline />
-                    </button>
-                  </div>
-                )}
               </div>
-            </div>
-          ))
+            ))
         ) : (
           <div className="py-6 text-center w-full">No Records</div>
         )}
       </div>
+      {totalPages >= 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePagination}
+        />
+      )}
       <div className="mt-4">
         <div className="md:flex items-center">
           <button

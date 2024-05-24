@@ -1,29 +1,40 @@
 // InventoryList.tsx
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
 import { inventoryActions } from "../../Redux/Reducers";
-import DataTable from "../Table";
-import MultiSearchInput from "../MultiSearchComp/MultiSearchInput";
+import DataTable from "../../components/Table";
+import MultiSearchInput from "../../components/MultiSearchComp/MultiSearchInput";
 
 const InventoryList: React.FC = () => {
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
-  const [editItemValues, setEditItemValues] = useState<any>(null);
-  const [newItemValues, setNewItemValues] = useState<any>(null);
+  const [editItemValues, setEditItemValues] = useState<any>({
+    id: 0,
+    name: "",
+    sku: "",
+    quantity: 0,
+    warehouse: "",
+  });
+  const [newItemValues, setNewItemValues] = useState<any>({
+    id: 0,
+    name: "",
+    sku: "",
+    quantity: 0,
+    warehouse: "",
+  });
 
   const dispatch = useDispatch();
-  const { suppliersItems } = useSelector((state: RootState) => state);
+  const { inventoryItems } = useSelector((state: any) => state);
 
   const handleEdit = (itemId: any) => {
     setEditingItemId(itemId);
-    const itemToEdit = suppliersItems.find((item: any) => item.id === itemId);
+    const itemToEdit = inventoryItems.find((item: any) => item.id === itemId);
     if (itemToEdit) {
       setEditItemValues({ ...itemToEdit });
     }
   };
 
   const handleSave = (data: any) => {
-    dispatch(inventoryActions.UPDATE_SUPPLIER(data));
+    dispatch(inventoryActions.UPDATE_INVENTORY(data));
     setEditingItemId(null);
     setEditItemValues(null);
   };
@@ -55,29 +66,30 @@ const InventoryList: React.FC = () => {
 
   const handleAddNewItem = (data: any) => {
     console.log(data);
-    dispatch(inventoryActions.ADD_SUPPLIER({ addItems: data }));
-    setNewItemValues(null);
+    dispatch(inventoryActions.ADD_INVENTORY({ addItems: data }));
+    setNewItemValues({
+      id: 0,
+      name: "",
+      sku: "",
+      quantity: 0,
+      warehouse: "",
+    });
   };
 
   const handleDelete = (itemId: number) => {
-    dispatch(inventoryActions.REMOVE_SUPPLIER({ removeItemId: itemId }));
+    dispatch(inventoryActions.REMOVE_INVENTORY({ removeItemId: itemId }));
   };
-  const columns = [
-    "id",
-    "supplier name",
-    "contact person",
-    "phone number",
-    "email address",
-  ];
-  const [filteredData, setFilteredData] = useState(suppliersItems);
+  const columns = ["ID", "item name", "SKU", "quantity", "warehouse"];
+  const [filteredData, setFilteredData] = useState(inventoryItems);
+
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold px-5">Supplier List</h2>
+        <h2 className="text-2xl font-semibold px-5">Inventory List</h2>
         <MultiSearchInput
           columns={columns}
           setFilteredData={setFilteredData}
-          data={suppliersItems}
+          data={inventoryItems}
         />
       </div>
       <DataTable
@@ -86,7 +98,7 @@ const InventoryList: React.FC = () => {
         onAdd={handleAddNewItem}
         onEdit={handleSave}
         onDelete={handleDelete}
-        initialState={["id", "name", "contactPerson", "phone", "email"]}
+        initialState={["id", "name", "sku", "quantity", "warehouse"]}
       />
     </div>
   );
