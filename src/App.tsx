@@ -8,20 +8,23 @@ import InventoryList from "./Pages/Inventory/InventoryList";
 import ShipmentList from "./Pages/Shipments/ShipmentsList";
 import SupplierList from "./Pages/SupplierList/SupplierList";
 import Navbar from "./components/Header/Navbar";
+import ParentContainer from "./components/ParentContainer/ParentContainer";
 function App() {
   return (
     <Provider store={store}>
       <>
         <Navbar />
         <div className="mt-20">
-          <Router>
-            <Routes>
-              <Route path="/" element={<InventoryList />} />
-              <Route path="/inventory" element={<InventoryList />} />
-              <Route path="/shipments" element={<ShipmentList />} />
-              <Route path="/suppliers" element={<SupplierList />} />
-            </Routes>
-          </Router>
+          <ParentContainer>
+            <Router>
+              <Routes>
+                <Route path="/" element={<InventoryList />} />
+                <Route path="/inventory" element={<InventoryList />} />
+                <Route path="/shipments" element={<ShipmentList />} />
+                <Route path="/suppliers" element={<SupplierList />} />
+              </Routes>
+            </Router>
+          </ParentContainer>
         </div>
       </>
     </Provider>

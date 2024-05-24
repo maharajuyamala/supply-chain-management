@@ -34,20 +34,14 @@ const InventoryList: React.FC = () => {
     setEditItemValues(null);
   };
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: keyof any,
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
     setEditItemValues({
       ...editItemValues,
       [fieldName]: event.target.value,
     });
   };
 
-  const handleNewInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: keyof any,
-  ) => {
+  const handleNewInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
     setNewItemValues({
       ...newItemValues,
       [fieldName]: event.target.value,
@@ -67,13 +61,9 @@ const InventoryList: React.FC = () => {
   const [filteredData, setFilteredData] = useState(shipmentsItems);
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold px-5">Shipment List</h2>
-        <MultiSearchInput
-          columns={columns}
-          setFilteredData={setFilteredData}
-          data={shipmentsItems}
-        />
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">Shipment List</h2>
+        <MultiSearchInput columns={columns} setFilteredData={setFilteredData} data={shipmentsItems} />
       </div>
       <DataTable
         data={filteredData}
@@ -82,13 +72,7 @@ const InventoryList: React.FC = () => {
         onEdit={handleSave}
         onDelete={handleDelete}
         statusOptions={["In Transit", "Delivered", "Delayed"]}
-        initialState={[
-          "id",
-          "origin",
-          "destination",
-          "status",
-          "estimatedDelivery",
-        ]}
+        initialState={["id", "origin", "destination", "status", "estimatedDelivery"]}
       />
     </div>
   );

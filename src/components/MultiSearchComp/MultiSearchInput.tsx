@@ -1,20 +1,11 @@
 import React, { useState } from "react";
 import { filteredItems } from "../../LocalStorage/GlobalFunctions";
 
-const MultiSearchInput = ({
-  columns,
-  setFilteredData,
-  data,
-  orginalData,
-}: any) => {
+const MultiSearchInput = ({ columns, setFilteredData, data, orginalData }: any) => {
   const placeholderText = `Search by ${columns.join(", ")}`;
   const handleSearch = (value: any) => {
     setQury(value);
-    window.history.pushState(
-      null,
-      "",
-      `?${value.length > 0 ? `search=${value}` : ""}`,
-    );
+    window.history.pushState(null, "", `?${value.length > 0 ? `search=${value}` : ""}`);
     setFilteredData(filteredItems(data, value));
   };
   const params = new URLSearchParams(window.location.search);
@@ -30,7 +21,7 @@ const MultiSearchInput = ({
     }
   }, [data]);
   return (
-    <div className="px-5  flex">
+    <div className="flex">
       <input
         type="text"
         value={query || ""}
@@ -38,7 +29,7 @@ const MultiSearchInput = ({
         onChange={(e) => {
           handleSearch(e?.target?.value);
         }}
-        className="w-full md:w-[40svw] px-3 py-2 border border-gray-300 rounded-lg"
+        className="w-full rounded-lg border border-gray-300 px-3 py-2 md:w-[40svw]"
       />
     </div>
   );

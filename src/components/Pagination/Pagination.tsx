@@ -7,12 +7,7 @@ interface PaginationProps {
   showPages?: number;
 }
 
-const Pagination: React.FC<PaginationProps> = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-  showPages = 4,
-}) => {
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange, showPages = 4 }) => {
   const [visiblePages, setVisiblePages] = useState<number[]>([]);
 
   useEffect(() => {
@@ -57,24 +52,22 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex justify-center my-4">
+    <div className="my-4 flex justify-center">
       <button
         onClick={handlePrevClick}
         disabled={currentPage === 1}
-        className="px-3 py-1 mx-1 border border-gray-300 rounded disabled:opacity-50"
+        className="mx-1 rounded border border-gray-300 px-3 py-1 disabled:opacity-50"
       >
         Prev
       </button>
       {visiblePages.map((page, index) => (
         <React.Fragment key={index}>
-          {page === -1 && <span className="px-3 py-1 mx-1">...</span>}
-          {page === -2 && <span className="px-3 py-1 mx-1">...</span>}
+          {page === -1 && <span className="mx-1 px-3 py-1">...</span>}
+          {page === -2 && <span className="mx-1 px-3 py-1">...</span>}
           {page !== -1 && page !== -2 && (
             <button
               onClick={() => handlePageClick(page)}
-              className={`px-3 py-1 mx-1 border border-gray-300 rounded ${
-                currentPage === page ? "bg-gray-300" : ""
-              }`}
+              className={`mx-1 rounded border border-gray-300 px-3 py-1 ${currentPage === page ? "bg-gray-300" : ""}`}
             >
               {page}
             </button>
@@ -84,7 +77,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={handleNextClick}
         disabled={currentPage === totalPages}
-        className="px-3 py-1 mx-1 border border-gray-300 rounded disabled:opacity-50"
+        className="mx-1 rounded border border-gray-300 px-3 py-1 disabled:opacity-50"
       >
         Next
       </button>

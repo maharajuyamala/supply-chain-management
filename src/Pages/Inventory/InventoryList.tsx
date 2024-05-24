@@ -44,20 +44,14 @@ const InventoryList: React.FC = () => {
     setEditItemValues(null);
   };
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: keyof any,
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
     setEditItemValues({
       ...editItemValues,
       [fieldName]: event.target.value,
     });
   };
 
-  const handleNewInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: keyof any,
-  ) => {
+  const handleNewInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
     setNewItemValues({
       ...newItemValues,
       [fieldName]: event.target.value,
@@ -84,13 +78,9 @@ const InventoryList: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold px-5">Inventory List</h2>
-        <MultiSearchInput
-          columns={columns}
-          setFilteredData={setFilteredData}
-          data={inventoryItems}
-        />
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">Inventory List</h2>
+        <MultiSearchInput columns={columns} setFilteredData={setFilteredData} data={inventoryItems} />
       </div>
       <DataTable
         data={filteredData}

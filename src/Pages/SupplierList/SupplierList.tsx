@@ -33,20 +33,14 @@ const InventoryList: React.FC = () => {
     setEditItemValues(null);
   };
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: keyof any,
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
     setEditItemValues({
       ...editItemValues,
       [fieldName]: event.target.value,
     });
   };
 
-  const handleNewInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: keyof any,
-  ) => {
+  const handleNewInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
     setNewItemValues({
       ...newItemValues,
       [fieldName]: event.target.value,
@@ -63,23 +57,13 @@ const InventoryList: React.FC = () => {
     dispatch(inventoryActions.REMOVE_SUPPLIER({ removeItemId: itemId }));
   };
 
-  const columns = [
-    "id",
-    "supplier name",
-    "contact person",
-    "phone number",
-    "email address",
-  ];
+  const columns = ["id", "supplier name", "contact person", "phone number", "email address"];
   const [filteredData, setFilteredData] = useState(suppliersItems);
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold px-5">Supplier List</h2>
-        <MultiSearchInput
-          columns={columns}
-          setFilteredData={setFilteredData}
-          data={suppliersItems}
-        />
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">Supplier List</h2>
+        <MultiSearchInput columns={columns} setFilteredData={setFilteredData} data={suppliersItems} />
       </div>
       <DataTable
         data={filteredData}
