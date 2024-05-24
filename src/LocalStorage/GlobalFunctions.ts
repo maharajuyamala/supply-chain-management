@@ -4,8 +4,8 @@ export const filteredItems = (data: any, searchQuery: any) => {
         Object.values(item).some(
           (value) =>
             typeof value === "string" &&
-            value?.toLowerCase()?.includes(searchQuery?.toLowerCase())
-        )
+            value?.toLowerCase()?.includes(searchQuery?.toLowerCase()),
+        ),
       )
     : data;
 };

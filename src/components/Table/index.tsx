@@ -39,7 +39,7 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
   const [newItemValues, setNewItemValues] = useState<Partial<T>>({});
   const [addPopUp, setAddPopUp] = useState(false);
   const [currentPage, setCurrentPage] = useState<any>(
-    JSON.parse(params.get("page") || "1")
+    JSON.parse(params.get("page") || "1"),
   );
 
   const handleEdit = (item: T) => {
@@ -67,7 +67,7 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setEditItemValues({
@@ -77,7 +77,7 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
   };
 
   const handleNewInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setNewItemValues({
@@ -133,7 +133,7 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
   useEffect(() => {
     console.log(
       data.slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage)
-        .length
+        .length,
     );
   }, [currentPage]);
 
@@ -276,7 +276,7 @@ const DataTable = <T extends { id: number }>(props: DataTableProps<T>) => {
                 </div>
               </div>
             </div>,
-            document.body
+            document.body,
           )}
       </div>
     </div>

@@ -35,7 +35,7 @@ const InventoryList: React.FC = () => {
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: keyof any
+    fieldName: keyof any,
   ) => {
     setEditItemValues({
       ...editItemValues,
@@ -45,7 +45,7 @@ const InventoryList: React.FC = () => {
 
   const handleNewInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    fieldName: keyof any
+    fieldName: keyof any,
   ) => {
     setNewItemValues({
       ...newItemValues,

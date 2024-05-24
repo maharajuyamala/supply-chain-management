@@ -13,7 +13,7 @@ const MultiSearchInput = ({
     window.history.pushState(
       null,
       "",
-      `?${value.length > 0 ? `search=${value}` : ""}`
+      `?${value.length > 0 ? `search=${value}` : ""}`,
     );
     setFilteredData(filteredItems(data, value));
   };

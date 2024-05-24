@@ -42,7 +42,7 @@ const inventoryReducer = createSlice({
       console.log(state.inventoryItems);
       console.log(action.payload.removeItemId);
       state.inventoryItems = state.inventoryItems.filter(
-        (item: any) => item.id != action.payload.removeItemId.id
+        (item: any) => item.id != action.payload.removeItemId.id,
       );
       console.log(state.inventoryItems);
 
@@ -50,7 +50,7 @@ const inventoryReducer = createSlice({
     },
     UPDATE_INVENTORY(state, action) {
       const index = state.inventoryItems.findIndex(
-        (item: any) => item.id === action.payload.id
+        (item: any) => item.id === action.payload.id,
       );
       if (index !== -1) {
         state.inventoryItems[index] = action.payload;
@@ -64,14 +64,14 @@ const inventoryReducer = createSlice({
     },
     REMOVE_SUPPLIER(state, action: PayloadAction<{ removeItemId: number }>) {
       const removeSupplier = state.suppliersItems.filter(
-        (item: any) => item.id != action.payload.removeItemId
+        (item: any) => item.id != action.payload.removeItemId,
       );
       state.suppliersItems = removeSupplier;
       saveState("suppliersItems", removeSupplier);
     },
     UPDATE_SUPPLIER(state, action) {
       const index = state.suppliersItems.findIndex(
-        (item: any) => item.id === action.payload.id
+        (item: any) => item.id === action.payload.id,
       );
       if (index !== -1) {
         state.suppliersItems[index] = action.payload;
@@ -86,14 +86,14 @@ const inventoryReducer = createSlice({
     },
     REMOVE_SHIPMENT(state, action: PayloadAction<{ removeItemId: number }>) {
       state.shipmentsItems = state.shipmentsItems.filter(
-        (item: any) => item.id !== action.payload.removeItemId
+        (item: any) => item.id !== action.payload.removeItemId,
       );
 
       saveState("shipmentsItems", state.shipmentsItems);
     },
     UPDATE_SHIPMENT(state, action) {
       const index = state.shipmentsItems.findIndex(
-        (item: any) => item.id === action.payload.id
+        (item: any) => item.id === action.payload.id,
       );
       if (index !== -1) {
         state.shipmentsItems[index] = action.payload;

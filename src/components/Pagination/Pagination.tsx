@@ -21,7 +21,7 @@ const Pagination: React.FC<PaginationProps> = ({
       const rightLimit = Math.min(
         leftLimit + showPages - 1,
         totalPages,
-        leftLimit + showPages - 1 + Math.min(showPages, totalPages - leftLimit)
+        leftLimit + showPages - 1 + Math.min(showPages, totalPages - leftLimit),
       );
 
       const visiblePagesArray = [];
