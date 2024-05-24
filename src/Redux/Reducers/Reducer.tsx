@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { loadState, saveState } from "../../LocalStorage";
 export interface InventoryItem {
   id: number;
   name: string;
@@ -23,54 +24,9 @@ export interface Type {
 }
 
 const initialState: Type = {
-  inventoryItems: [
-    {
-      id: 1,
-      name: "Item 1",
-      sku: "SKU001",
-      quantity: 100,
-      warehouse: "Warehouse A",
-    },
-    {
-      id: 2,
-      name: "Item 2",
-      sku: "SKU002",
-      quantity: 200,
-      warehouse: "Warehouse B",
-    },
-  ],
-  shipmentsItems: [
-    {
-      id: 1,
-      origin: "Location A",
-      destination: "Location B",
-      status: "In Transit",
-      estimatedDelivery: "2024-05-25",
-    },
-    {
-      id: 2,
-      origin: "Location C",
-      destination: "Location D",
-      status: "Delivered",
-      estimatedDelivery: "2024-05-20",
-    },
-  ],
-  suppliersItems: [
-    {
-      id: 1,
-      name: "Supplier 1",
-      contactPerson: "John Doe",
-      phone: "123-456-7890",
-      email: "john@example.com",
-    },
-    {
-      id: 2,
-      name: "Supplier 2",
-      contactPerson: "Jane Smith",
-      phone: "987-654-3210",
-      email: "jane@example.com",
-    },
-  ],
+  inventoryItems: loadState("inventoryItems") || [],
+  shipmentsItems: loadState("shipmentsItems") || [],
+  suppliersItems: loadState("suppliersItems") || [],
 };
 
 const inventoryReducer = createSlice({
@@ -79,12 +35,18 @@ const inventoryReducer = createSlice({
   reducers: {
     ADD_INVENTORY: (state, action) => {
       state.inventoryItems = [...state.inventoryItems, action.payload.addItems];
-      console.log([...state.inventoryItems, action.payload.addItems]);
+      saveState("inventoryItems", state.inventoryItems);
+      console.log(state.inventoryItems);
     },
-    REMOVE_INVENTORY(state, action: PayloadAction<{ removeItemId: number }>) {
+    REMOVE_INVENTORY(state, action: PayloadAction<{ removeItemId: any }>) {
+      console.log(state.inventoryItems);
+      console.log(action.payload.removeItemId);
       state.inventoryItems = state.inventoryItems.filter(
-        (item: any) => item.id !== action.payload.removeItemId
+        (item: any) => item.id != action.payload.removeItemId.id
       );
+      console.log(state.inventoryItems);
+
+      saveState("inventoryItems", state.inventoryItems);
     },
     UPDATE_INVENTORY(state, action) {
       const index = state.inventoryItems.findIndex(
@@ -92,16 +54,19 @@ const inventoryReducer = createSlice({
       );
       if (index !== -1) {
         state.inventoryItems[index] = action.payload;
+        saveState("inventoryItems", state.inventoryItems);
       }
     },
     ADD_SUPPLIER: (state, action) => {
       state.suppliersItems = [...state.suppliersItems, action.payload.addItems];
-      console.log([...state.inventoryItems, action.payload.addItems]);
+      saveState("suppliersItems", state.suppliersItems);
     },
     REMOVE_SUPPLIER(state, action: PayloadAction<{ removeItemId: number }>) {
-      state.suppliersItems = state.suppliersItems.filter(
+      const removeSupplier = state.suppliersItems.filter(
         (item: any) => item.id !== action.payload.removeItemId
       );
+      state.suppliersItems = removeSupplier;
+      saveState("suppliersItems", removeSupplier);
     },
     UPDATE_SUPPLIER(state, action) {
       const index = state.suppliersItems.findIndex(
@@ -109,15 +74,21 @@ const inventoryReducer = createSlice({
       );
       if (index !== -1) {
         state.suppliersItems[index] = action.payload;
+        saveState("suppliersItems", state.inventoryItems);
       }
     },
     ADD_SHIPMENT: (state, action) => {
+      console.log([...state.shipmentsItems, action.payload.addItems]);
       state.shipmentsItems = [...state.shipmentsItems, action.payload.addItems];
+
+      saveState("shipmentsItems", state.shipmentsItems);
     },
     REMOVE_SHIPMENT(state, action: PayloadAction<{ removeItemId: number }>) {
       state.shipmentsItems = state.shipmentsItems.filter(
         (item: any) => item.id !== action.payload.removeItemId
       );
+
+      saveState("shipmentsItems", state.shipmentsItems);
     },
     UPDATE_SHIPMENT(state, action) {
       const index = state.shipmentsItems.findIndex(
@@ -125,6 +96,7 @@ const inventoryReducer = createSlice({
       );
       if (index !== -1) {
         state.shipmentsItems[index] = action.payload;
+        saveState("shipmentsItems", state.shipmentsItems);
       }
     },
   },

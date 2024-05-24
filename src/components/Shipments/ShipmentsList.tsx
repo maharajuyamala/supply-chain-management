@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { inventoryActions } from "../../Redux/Reducers";
 import DataTable from "../Table";
+import MultiSearchInput from "../MultiSearchComp/MultiSearchInput";
 
 const InventoryList: React.FC = () => {
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
@@ -12,7 +13,7 @@ const InventoryList: React.FC = () => {
 
   const dispatch = useDispatch();
   const { shipmentsItems } = useSelector((state: RootState) => state);
-
+  console.log(shipmentsItems);
   const handleEdit = (itemId: any) => {
     setEditingItemId(itemId);
     const itemToEdit = shipmentsItems.find((item: any) => item.id === itemId);
@@ -63,17 +64,31 @@ const InventoryList: React.FC = () => {
     dispatch(inventoryActions.REMOVE_SHIPMENT({ removeItemId: itemId }));
   };
   const columns = ["shipment ID", "origin", "destination", "status"];
-
+  const [filteredData, setFilteredData] = useState(shipmentsItems);
   return (
     <div>
-      <h2>Shipment List</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-semibold px-5">Shipment List</h2>
+        <MultiSearchInput
+          columns={columns}
+          setFilteredData={setFilteredData}
+          data={shipmentsItems}
+        />
+      </div>
       <DataTable
-        data={shipmentsItems}
+        data={filteredData}
         columns={columns}
         onAdd={handleAddNewItem}
         onEdit={handleSave}
         onDelete={handleDelete}
         statusOptions={["In Transit", "Delivered", "Delayed"]}
+        initialState={[
+          "id",
+          "origin",
+          "destination",
+          "status",
+          "estimatedDelivery",
+        ]}
       />
     </div>
   );

@@ -5,6 +5,9 @@ import { RootState } from "../../Redux/store";
 import { inventoryActions } from "../../Redux/Reducers";
 import InventoryItemComponent from "./InventoryItem";
 import DataTable from "../Table";
+import { filteredItems } from "../../LocalStorage/GlobalFunctions";
+import { useParams } from "react-router-dom";
+import MultiSearchInput from "../MultiSearchComp/MultiSearchInput";
 
 const InventoryList: React.FC = () => {
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
@@ -34,29 +37,15 @@ const InventoryList: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
-    dispatch(
-      inventoryActions.UPDATE_INVENTORY({ updatedItem: editItemValues })
-    );
+  const handleSave = (data: any) => {
+    dispatch(inventoryActions.UPDATE_INVENTORY(data));
     setEditingItemId(null);
-    setEditItemValues({
-      id: 0,
-      name: "",
-      sku: "",
-      quantity: 0,
-      warehouse: "",
-    });
+    setEditItemValues(null);
   };
 
   const handleCancel = () => {
     setEditingItemId(null);
-    setEditItemValues({
-      id: 0,
-      name: "",
-      sku: "",
-      quantity: 0,
-      warehouse: "",
-    });
+    setEditItemValues(null);
   };
 
   const handleInputChange = (
@@ -95,16 +84,25 @@ const InventoryList: React.FC = () => {
     dispatch(inventoryActions.REMOVE_INVENTORY({ removeItemId: itemId }));
   };
   const columns = ["ID", "item name", "SKU", "quantity", "warehouse"];
+  const [filteredData, setFilteredData] = useState(inventoryItems);
 
   return (
     <div>
-      <h2>Inventory List</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-semibold px-5">Inventory List</h2>
+        <MultiSearchInput
+          columns={columns}
+          setFilteredData={setFilteredData}
+          data={inventoryItems}
+        />
+      </div>
       <DataTable
-        data={inventoryItems}
+        data={filteredData}
         columns={columns}
         onAdd={handleAddNewItem}
-        onEdit={handleEdit}
+        onEdit={handleSave}
         onDelete={handleDelete}
+        initialState={["id", "name", "sku", "quantity", "warehouse"]}
       />
     </div>
   );

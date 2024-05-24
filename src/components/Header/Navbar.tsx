@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-gray-800 p-4 fixed w-full top-0">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
@@ -30,32 +30,51 @@ const Navbar: React.FC = () => {
               />
             )}
           </div>
-          {/* Navbar links */}
-          <div
-            className={`${
-              isOpen ? "block" : "hidden"
-            }  md:flex md:items-center`}
-          >
+          <div className={`  md:flex md:items-center hidden`}>
             <a
               href="/inventory"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              className="w-full md:w-fit text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
             >
               Inventory
             </a>
             <a
               href="/shipments"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              className="w-full md:w-fit text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
             >
               Shipments
             </a>
             <a
               href="/suppliers"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              className="text-gray-300 w-full md:w-fit hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
             >
               Suppliers
             </a>
           </div>
         </div>
+      </div>
+      <div
+        className={`${
+          isOpen ? "flex-col" : "hidden"
+        }  flex flex-col md:items-center absolute top-[55px] w-full left-0 right-0 py-2 z-40 bg-gray-600`}
+      >
+        <a
+          href="/inventory"
+          className="w-full md:w-fit text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Inventory
+        </a>
+        <a
+          href="/shipments"
+          className="w-full md:w-fit text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Shipments
+        </a>
+        <a
+          href="/suppliers"
+          className="text-gray-300 w-full md:w-fit hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Suppliers
+        </a>
       </div>
     </nav>
   );

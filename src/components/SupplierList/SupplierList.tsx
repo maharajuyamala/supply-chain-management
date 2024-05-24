@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import { inventoryActions } from "../../Redux/Reducers";
 import DataTable from "../Table";
+import MultiSearchInput from "../MultiSearchComp/MultiSearchInput";
 
 const InventoryList: React.FC = () => {
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
@@ -68,16 +69,24 @@ const InventoryList: React.FC = () => {
     "phone number",
     "email address",
   ];
-
+  const [filteredData, setFilteredData] = useState(suppliersItems);
   return (
     <div>
-      <h2>Supplier List</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-semibold px-5">Supplier List</h2>
+        <MultiSearchInput
+          columns={columns}
+          setFilteredData={setFilteredData}
+          data={suppliersItems}
+        />
+      </div>
       <DataTable
-        data={suppliersItems}
+        data={filteredData}
         columns={columns}
         onAdd={handleAddNewItem}
         onEdit={handleSave}
         onDelete={handleDelete}
+        initialState={["id", "name", "contactPerson", "phone", "email"]}
       />
     </div>
   );

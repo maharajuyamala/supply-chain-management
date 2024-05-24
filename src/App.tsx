@@ -13,14 +13,16 @@ function App() {
     <Provider store={store}>
       <>
         <Navbar />
-        <Router>
-          <Routes>
-            <Route path="/" element={<InventoryList />} />
-            <Route path="/inventory" element={<InventoryList />} />
-            <Route path="/shipments" element={<ShipmentList />} />
-            <Route path="/suppliers" element={<SupplierList />} />
-          </Routes>
-        </Router>
+        <div className="mt-20">
+          <Router>
+            <Routes>
+              <Route path="/" element={<InventoryList />} />
+              <Route path="/inventory" element={<InventoryList />} />
+              <Route path="/shipments" element={<ShipmentList />} />
+              <Route path="/suppliers" element={<SupplierList />} />
+            </Routes>
+          </Router>
+        </div>
       </>
     </Provider>
   );
