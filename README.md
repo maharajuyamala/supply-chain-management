@@ -112,7 +112,6 @@ Ensure you have the following installed on your development machine:
    ```bash
    git clone https://github.com/maharajuyamala/supply-chain-management.git
    cd supply-chain-management
-   git checkout develop
    ```
 
 2. Install dependencies:
