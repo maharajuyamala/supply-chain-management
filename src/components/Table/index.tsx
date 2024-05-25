@@ -37,14 +37,31 @@ const DataTable = <T extends EditableItem>(props: DataTableProps<T>) => {
   useEffect(() => {
     if (!params.get("page")) {
       setCurrentPage(1);
+      params?.set("page", "1");
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState({}, "", newUrl);
     }
-  }, [params]);
-
+  }, []);
+  const [paginationPages, setPaginationPages] = useState(data);
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
   const [editItemValues, setEditItemValues] = useState<Partial<T>>({});
   const [newItemValues, setNewItemValues] = useState<Partial<T>>({});
   const [addPopUp, setAddPopUp] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(JSON.parse(params.get("page") || "1"));
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{ id: number | null; open: boolean }>({
+    id: null,
+    open: false,
+  });
+
+  useEffect(() => {
+    setPaginationPages(data.slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage));
+    if (data.slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage).length == 0 && currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+      params.set("page", JSON.stringify(currentPage - 1));
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [currentPage, data]);
 
   const handleEdit = (item: Element) => {
     setEditingItemId(item.id as number);
@@ -93,8 +110,19 @@ const DataTable = <T extends EditableItem>(props: DataTableProps<T>) => {
     setAddPopUp(false);
   };
 
+  // const handleDelete = (id: number) => {
+  //   onDelete(id);
+  // };
+
   const handleDelete = (id: number) => {
-    onDelete(id);
+    setDeleteConfirmation({ id, open: true });
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteConfirmation.id !== null) {
+      onDelete(deleteConfirmation.id);
+      setDeleteConfirmation({ id: null, open: false });
+    }
   };
 
   const renderCell = (item: MultiItemType, column: string, index: number) => {
@@ -142,40 +170,38 @@ const DataTable = <T extends EditableItem>(props: DataTableProps<T>) => {
             {isAdmin && <div className="border-b border-gray-200 bg-gray-100 px-4 py-2 text-left">Actions</div>}
           </div>
           {data.length > 0 ? (
-            data
-              .slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage)
-              .map((item: MultiItemType, index) => (
-                <div key={`${item.id}_${index}`} className="grid" style={{ gridTemplateColumns }}>
-                  {columns.map((column, index) => (
-                    <div key={column} className="overflow-x-hidden border-b border-gray-200 px-4 py-2 text-left">
-                      {renderCell(item, column, index)}
-                    </div>
-                  ))}
-                  {isAdmin && (
-                    <div className="border-b border-gray-200 px-4 py-2 text-left">
-                      {editingItemId === item.id ? (
-                        <div className="flex gap-3">
-                          <button onClick={handleSave} className="mr-2 rounded py-1 text-black">
-                            <IoCheckmarkOutline />
-                          </button>
-                          <button onClick={handleCancel} className="mr-2 rounded py-1 text-black">
-                            <RxCross1 size={14} />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex gap-3">
-                          <button onClick={() => handleEdit(item)} className="mr-2 rounded py-1 text-black">
-                            <BiEditAlt />
-                          </button>
-                          <button onClick={() => handleDelete(item.id as number)} className="rounded py-1 text-black">
-                            <MdDeleteOutline />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))
+            paginationPages.map((item: MultiItemType, index) => (
+              <div key={`${item.id}_${index}`} className="grid" style={{ gridTemplateColumns }}>
+                {columns.map((column, index) => (
+                  <div key={column} className="overflow-x-hidden border-b border-gray-200 px-4 py-2 text-left">
+                    {renderCell(item, column, index)}
+                  </div>
+                ))}
+                {isAdmin && (
+                  <div className="border-b border-gray-200 px-4 py-2 text-left">
+                    {editingItemId === item.id ? (
+                      <div className="flex gap-3">
+                        <button onClick={handleSave} className="mr-2 rounded py-1 text-black">
+                          <IoCheckmarkOutline />
+                        </button>
+                        <button onClick={handleCancel} className="mr-2 rounded py-1 text-black">
+                          <RxCross1 size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-3">
+                        <button onClick={() => handleEdit(item)} className="mr-2 rounded py-1 text-black">
+                          <BiEditAlt />
+                        </button>
+                        <button onClick={() => handleDelete(item.id as number)} className="rounded py-1 text-black">
+                          <MdDeleteOutline />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))
           ) : (
             <div className="w-full py-6 text-center">No Records</div>
           )}
@@ -245,6 +271,30 @@ const DataTable = <T extends EditableItem>(props: DataTableProps<T>) => {
               </div>,
               document.body,
             )}
+          {deleteConfirmation.open && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+              onClick={() => setDeleteConfirmation({ ...deleteConfirmation, open: false })}
+            >
+              <div className="rounded-lg bg-white p-6">
+                <p className="text-lg">Are you sure you want to delete this item?</p>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    className="mr-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                    onClick={handleDeleteConfirm}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    className="rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
+                    onClick={() => setDeleteConfirmation({ ...deleteConfirmation, open: false })}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {totalPages >= 1 && (
