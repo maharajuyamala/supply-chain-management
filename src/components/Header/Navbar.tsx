@@ -9,6 +9,7 @@ import { inventoryActions } from "../../Redux/Reducers";
 import { IoMdArrowDropup } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import ParentContainer from "../ParentContainer/ParentContainer";
+import { initialInventoryData, initialShipmentsData, initialSuppliersData } from "../../LocalStorage/IntitalData";
 
 const Navbar: React.FC = () => {
   interface Menu {
@@ -34,6 +35,24 @@ const Navbar: React.FC = () => {
     if (email == "admin@gmail.com") {
       dispatch(inventoryActions.SET_ADMIN(true));
     }
+    // Function to check if it's the first time user
+    const isFirstTimeUser = () => {
+      const notFirstTimeUser = localStorage.getItem("notFirstTimeUser");
+      return notFirstTimeUser ? JSON.parse(notFirstTimeUser) : false;
+    };
+
+    // Function to add initial data if it's the first time user
+    const addInitialDataIfFirstTimeUser = () => {
+      if (!isFirstTimeUser()) {
+        localStorage.setItem("inventoryItems", JSON.stringify(initialInventoryData));
+        localStorage.setItem("suppliersItems", JSON.stringify(initialSuppliersData));
+        localStorage.setItem("shipmentsItems", JSON.stringify(initialShipmentsData));
+        localStorage.setItem("notFirstTimeUser", JSON.stringify(true));
+        window.location.reload();
+      }
+    };
+
+    addInitialDataIfFirstTimeUser();
   }, [email]);
   const [tooltip, setTooltip] = useState(false);
   return (

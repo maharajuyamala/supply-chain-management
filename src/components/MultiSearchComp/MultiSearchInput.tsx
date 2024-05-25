@@ -10,8 +10,23 @@ interface MultiSearchInputProps {
 const MultiSearchInput: React.FC<MultiSearchInputProps> = ({ columns, setFilteredData, data }) => {
   const placeholderText = `Search by ${columns.join(", ")}`;
   const handleSearch = (value: string) => {
+    // Set the query state
     setQury(value);
-    window.history.pushState(null, "", `?${value.length > 0 ? `search=${value}` : ""}`);
+    setFilteredData(filteredItems(data, value));
+    // Construct the new URL search params
+    const newSearchParams = new URLSearchParams();
+    if (value?.length > 0) {
+      newSearchParams.set("search", value);
+    } else {
+      newSearchParams.delete("search");
+    }
+    newSearchParams.set("page", "1"); // Set page to 1
+
+    // Update the browser history with the new URL
+    const newUrl = `${window.location.pathname}?${newSearchParams.toString()}`;
+    window.history.pushState(null, "", newUrl);
+
+    // Filter the data based on the new search value and update the filtered data state
     setFilteredData(filteredItems(data, value));
   };
   const params = new URLSearchParams(window.location.search);
