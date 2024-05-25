@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { filteredItems } from "../../LocalStorage/GlobalFunctions";
+import { InventoryItem, ShipmentItem, SupplierItem } from "../Types";
+interface MultiSearchInputProps {
+  columns: string[];
+  setFilteredData: React.Dispatch<React.SetStateAction<any[]>>;
+  data: InventoryItem[] | ShipmentItem[] | SupplierItem[];
+}
 
-const MultiSearchInput = ({ columns, setFilteredData, data, orginalData }: any) => {
+const MultiSearchInput: React.FC<MultiSearchInputProps> = ({ columns, setFilteredData, data }) => {
   const placeholderText = `Search by ${columns.join(", ")}`;
-  const handleSearch = (value: any) => {
+  const handleSearch = (value: string) => {
     setQury(value);
     window.history.pushState(null, "", `?${value.length > 0 ? `search=${value}` : ""}`);
     setFilteredData(filteredItems(data, value));
@@ -12,10 +18,9 @@ const MultiSearchInput = ({ columns, setFilteredData, data, orginalData }: any) 
   const [query, setQury] = useState(params.get("search"));
 
   React.useEffect(() => {
-    console.log("Rtgfdcx");
     const params = new URLSearchParams(window.location.search);
     if (params.get("search")) {
-      setFilteredData(filteredItems(data, params.get("search")));
+      setFilteredData(filteredItems(data, params.get("search") || ""));
     } else {
       setFilteredData(data);
     }

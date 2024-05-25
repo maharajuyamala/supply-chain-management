@@ -5,52 +5,19 @@ import { RootState } from "../../Redux/store";
 import { inventoryActions } from "../../Redux/Reducers";
 import DataTable from "../../components/Table";
 import MultiSearchInput from "../../components/MultiSearchComp/MultiSearchInput";
+import { InventoryItem, MultiItemType, ShipmentItem, SupplierItem } from "../../components/Types";
 
 const InventoryList: React.FC = () => {
-  const [editingItemId, setEditingItemId] = useState<number | null>(null);
-  const [editItemValues, setEditItemValues] = useState<any>(null);
-  const [newItemValues, setNewItemValues] = useState<any>(null);
-
   const dispatch = useDispatch();
   const { suppliersItems } = useSelector((state: RootState) => state);
 
-  const handleEdit = (itemId: any) => {
-    setEditingItemId(itemId);
-    const itemToEdit = suppliersItems.find((item: any) => item.id === itemId);
-    if (itemToEdit) {
-      setEditItemValues({ ...itemToEdit });
-    }
-  };
-
-  const handleSave = (data: any) => {
+  const handleSave = (data: MultiItemType) => {
     dispatch(inventoryActions.UPDATE_SUPPLIER(data));
-    setEditingItemId(null);
-    setEditItemValues(null);
   };
 
-  const handleCancel = () => {
-    setEditingItemId(null);
-    setEditItemValues(null);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
-    setEditItemValues({
-      ...editItemValues,
-      [fieldName]: event.target.value,
-    });
-  };
-
-  const handleNewInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
-    setNewItemValues({
-      ...newItemValues,
-      [fieldName]: event.target.value,
-    });
-  };
-
-  const handleAddNewItem = (data: any) => {
+  const handleAddNewItem = (data: MultiItemType) => {
     console.log(data);
     dispatch(inventoryActions.ADD_SUPPLIER({ addItems: data }));
-    setNewItemValues(null);
   };
 
   const handleDelete = (itemId: number) => {
@@ -62,7 +29,7 @@ const InventoryList: React.FC = () => {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Supplier List</h2>
+        <h2 className="px-5 text-2xl font-semibold">Supplier List</h2>
         <MultiSearchInput columns={columns} setFilteredData={setFilteredData} data={suppliersItems} />
       </div>
       <DataTable

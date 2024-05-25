@@ -11,12 +11,17 @@ import { CgProfile } from "react-icons/cg";
 import ParentContainer from "../ParentContainer/ParentContainer";
 
 const Navbar: React.FC = () => {
+  interface Menu {
+    label: string;
+    link: string;
+  }
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-  const menu = [
+
+  const menu: Menu[] = [
     { label: "Inventory", link: "/inventory" },
     { label: "Shipments", link: "/shipments" },
     { label: "Suppliers", link: "/suppliers" },
@@ -26,7 +31,6 @@ const Navbar: React.FC = () => {
   const email = localStorage.getItem("email");
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log(email);
     if (email == "admin@gmail.com") {
       dispatch(inventoryActions.SET_ADMIN(true));
     }
@@ -62,7 +66,7 @@ const Navbar: React.FC = () => {
               </div>
             </div>
             <div className={`  hidden md:flex md:items-center`}>
-              {menu?.map((item: any, index: number) => (
+              {menu?.map((item, index: number) => (
                 <a
                   href={item?.link}
                   key={index}
@@ -127,7 +131,7 @@ const Navbar: React.FC = () => {
             isOpen ? "flex-col" : "hidden"
           }  absolute left-0 right-0 top-[67px] z-40 flex w-full flex-col bg-gray-600 py-2 md:items-center`}
         >
-          {menu?.map((item: any, index: number) => (
+          {menu?.map((item, index: number) => (
             <a
               href={item?.link}
               key={index}

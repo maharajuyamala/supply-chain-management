@@ -1,20 +1,21 @@
-// InventoryList.tsx
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { inventoryActions } from "../../Redux/Reducers";
-import DataTable from "../../components/Table";
+import { InventoryItem, inventoryActions } from "../../Redux/Reducers";
+import DataTable, { EditableItem } from "../../components/Table";
 import MultiSearchInput from "../../components/MultiSearchComp/MultiSearchInput";
+import { RootState } from "../../Redux/store";
+import { ShipmentItem } from "../../components/Types";
 
 const InventoryList: React.FC = () => {
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
-  const [editItemValues, setEditItemValues] = useState<any>({
+  const [editItemValues, setEditItemValues] = useState<InventoryItem | null>({
     id: 0,
     name: "",
     sku: "",
     quantity: 0,
     warehouse: "",
   });
-  const [newItemValues, setNewItemValues] = useState<any>({
+  const [newItemValues, setNewItemValues] = useState<InventoryItem>({
     id: 0,
     name: "",
     sku: "",
@@ -23,42 +24,15 @@ const InventoryList: React.FC = () => {
   });
 
   const dispatch = useDispatch();
-  const { inventoryItems } = useSelector((state: any) => state);
+  const { inventoryItems } = useSelector((state: RootState) => state);
 
-  const handleEdit = (itemId: any) => {
-    setEditingItemId(itemId);
-    const itemToEdit = inventoryItems.find((item: any) => item.id === itemId);
-    if (itemToEdit) {
-      setEditItemValues({ ...itemToEdit });
-    }
-  };
-
-  const handleSave = (data: any) => {
+  const handleSave = (data: InventoryItem) => {
     dispatch(inventoryActions.UPDATE_INVENTORY(data));
     setEditingItemId(null);
     setEditItemValues(null);
   };
 
-  const handleCancel = () => {
-    setEditingItemId(null);
-    setEditItemValues(null);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
-    setEditItemValues({
-      ...editItemValues,
-      [fieldName]: event.target.value,
-    });
-  };
-
-  const handleNewInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
-    setNewItemValues({
-      ...newItemValues,
-      [fieldName]: event.target.value,
-    });
-  };
-
-  const handleAddNewItem = (data: any) => {
+  const handleAddNewItem = (data: InventoryItem) => {
     console.log(data);
     dispatch(inventoryActions.ADD_INVENTORY({ addItems: data }));
     setNewItemValues({
@@ -74,7 +48,16 @@ const InventoryList: React.FC = () => {
     dispatch(inventoryActions.REMOVE_INVENTORY({ removeItemId: itemId }));
   };
   const columns = ["ID", "item name", "SKU", "quantity", "warehouse"];
-  const [filteredData, setFilteredData] = useState(inventoryItems);
+
+  const [filteredData, setFilteredData] = useState<InventoryItem[]>(inventoryItems);
+  // Convert inventoryItems to EditableItem[]
+  const editableInventoryItems: EditableItem[] = inventoryItems.map((item) => ({
+    id: item.id || 0,
+    name: item.name,
+    sku: item.sku,
+    quantity: item.quantity,
+    warehouse: item.warehouse,
+  }));
 
   return (
     <div>
@@ -83,7 +66,7 @@ const InventoryList: React.FC = () => {
         <MultiSearchInput columns={columns} setFilteredData={setFilteredData} data={inventoryItems} />
       </div>
       <DataTable
-        data={filteredData}
+        data={editableInventoryItems}
         columns={columns}
         onAdd={handleAddNewItem}
         onEdit={handleSave}

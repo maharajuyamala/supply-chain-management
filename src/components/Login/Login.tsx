@@ -1,17 +1,32 @@
 import React, { useEffect, useState } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { AuthCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase.config";
 import classNames from "classnames";
 import { IoIosClose } from "react-icons/io";
 
-const LoginForm: React.FC<any> = ({ onClose }: any) => {
+interface FormProps {
+  onClose: () => void;
+}
+
+interface Error {
+  message: string;
+  status: string;
+}
+
+interface UserCredential {
+  user: {
+    reloadUserInfo: { email: string };
+  };
+}
+
+const LoginForm: React.FC<FormProps> = ({ onClose }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [show, setShow] = useState({ message: "", status: "" });
 
-  const messages: any = {
+  const messages = {
     ["invalid-credential"]: "username/password is invalid",
   };
   const handleLogin = async (e: React.FormEvent) => {
@@ -19,8 +34,8 @@ const LoginForm: React.FC<any> = ({ onClose }: any) => {
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential: any) => {
+        // TODO: Need to interface
         const email = userCredential?.user?.reloadUserInfo?.email;
-        console.log(email);
         localStorage.setItem("email", email);
         onClose();
       })
@@ -52,8 +67,9 @@ const LoginForm: React.FC<any> = ({ onClose }: any) => {
           const errorMessage = error.message;
           // ..
         });
-    } catch (error: any) {
-      console.error("Error signing up:", error.message);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      console.error("Error signing up:", errorMessage);
     }
   };
 

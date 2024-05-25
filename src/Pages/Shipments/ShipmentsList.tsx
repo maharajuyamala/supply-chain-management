@@ -5,24 +5,30 @@ import { RootState } from "../../Redux/store";
 import { inventoryActions } from "../../Redux/Reducers";
 import DataTable from "../../components/Table";
 import MultiSearchInput from "../../components/MultiSearchComp/MultiSearchInput";
+import { InventoryItem, ShipmentItem, SupplierItem } from "../../components/Types";
+
+type EditableItem = ShipmentItem;
+
+interface DataTableProps {
+  data: EditableItem[];
+  columns: string[];
+  onAdd: (item: EditableItem) => void;
+  onEdit: (item: EditableItem) => void;
+  onDelete: (id: number) => void;
+  statusOptions?: string[];
+  initialState: string[];
+}
 
 const InventoryList: React.FC = () => {
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
-  const [editItemValues, setEditItemValues] = useState<any>(null);
-  const [newItemValues, setNewItemValues] = useState<any>(null);
+  const [editItemValues, setEditItemValues] = useState<{ [key: string]: string } | null>(null);
+  const [newItemValues, setNewItemValues] = useState<{ [key: string]: string } | null>(null);
 
   const dispatch = useDispatch();
   const { shipmentsItems } = useSelector((state: RootState) => state);
   console.log(shipmentsItems);
-  const handleEdit = (itemId: any) => {
-    setEditingItemId(itemId);
-    const itemToEdit = shipmentsItems.find((item: any) => item.id === itemId);
-    if (itemToEdit) {
-      setEditItemValues({ ...itemToEdit });
-    }
-  };
 
-  const handleSave = (data: any) => {
+  const handleSave = (data: ShipmentItem) => {
     console.log(data);
     dispatch(inventoryActions.UPDATE_SHIPMENT(data));
     setEditingItemId(null);
@@ -34,21 +40,7 @@ const InventoryList: React.FC = () => {
     setEditItemValues(null);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
-    setEditItemValues({
-      ...editItemValues,
-      [fieldName]: event.target.value,
-    });
-  };
-
-  const handleNewInputChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: keyof any) => {
-    setNewItemValues({
-      ...newItemValues,
-      [fieldName]: event.target.value,
-    });
-  };
-
-  const handleAddNewItem = (data: any) => {
+  const handleAddNewItem = (data: InventoryItem | SupplierItem | ShipmentItem) => {
     console.log(data);
     dispatch(inventoryActions.ADD_SHIPMENT({ addItems: data }));
     setNewItemValues(null);
@@ -58,7 +50,7 @@ const InventoryList: React.FC = () => {
     dispatch(inventoryActions.REMOVE_SHIPMENT({ removeItemId: itemId }));
   };
   const columns = ["shipment ID", "origin", "destination", "status"];
-  const [filteredData, setFilteredData] = useState(shipmentsItems);
+  const [filteredData, setFilteredData] = useState<ShipmentItem[]>(shipmentsItems);
   return (
     <div>
       <div className="flex items-center justify-between">

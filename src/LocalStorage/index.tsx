@@ -1,3 +1,5 @@
+import { InventoryItem, MultiItemType, ShipmentItem, SupplierItem } from "../components/Types";
+
 export const loadState = (name: string) => {
   try {
     const serializedState = localStorage.getItem(name);
@@ -11,8 +13,7 @@ export const loadState = (name: string) => {
   }
 };
 
-export const saveState = (name: string, state: any) => {
-  console.log(state);
+export const saveState = (name: string, state: MultiItemType) => {
   try {
     const serializedState = JSON.stringify(state);
     localStorage.setItem(name, serializedState);
