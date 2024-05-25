@@ -5,6 +5,7 @@ import DataTable, { EditableItem } from "../../components/Table";
 import MultiSearchInput from "../../components/MultiSearchComp/MultiSearchInput";
 import { RootState } from "../../Redux/store";
 import { ShipmentItem } from "../../components/Types";
+import InventoryChart from "../../components/Chart/Chart";
 
 const InventoryList: React.FC = () => {
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
@@ -73,6 +74,7 @@ const InventoryList: React.FC = () => {
         onDelete={handleDelete}
         initialState={["id", "name", "sku", "quantity", "warehouse"]}
       />
+      <InventoryChart data={filteredData} />
     </div>
   );
 };
