@@ -67,14 +67,16 @@ const Navbar: React.FC = () => {
               </div>
             </div>{" "}
             <div className="flex items-center gap-5 md:hidden">
-              <div
-                className={classNames(
-                  " flex w-fit items-center gap-2 rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-gray-300 shadow-inner	 hover:text-white md:w-fit",
-                )}
-              >
-                <CgProfile />
-                {email}
-              </div>
+              {email && (
+                <div
+                  className={classNames(
+                    " flex w-fit items-center gap-2 rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-gray-300 shadow-inner	 hover:text-white md:w-fit",
+                  )}
+                >
+                  <CgProfile />
+                  {email}
+                </div>
+              )}
               {/* Hamburger menu button */}
               <div>
                 {isOpen ? (
@@ -148,14 +150,14 @@ const Navbar: React.FC = () => {
         <div
           className={`${
             isOpen ? "flex-col" : "hidden"
-          }  absolute left-0 right-0 top-[67px] z-40 flex w-full flex-col bg-gray-600 py-2 md:items-center`}
+          }  absolute left-0 right-0 top-[63px] z-40 flex w-full flex-col bg-gray-600 py-2 md:items-center`}
         >
           {menu?.map((item, index: number) => (
             <a
               href={item?.link}
               key={index}
               className={classNames(
-                "w-full rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white md:w-fit",
+                "w-full px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white md:w-fit",
                 path == item?.link && "bg-gray-700",
               )}
             >
@@ -165,7 +167,7 @@ const Navbar: React.FC = () => {
           {email ? (
             <button
               className={classNames(
-                "w-full cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white md:w-fit",
+                "w-full cursor-pointer  px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white md:w-fit",
               )}
               onClick={() => {
                 localStorage.removeItem("email");
@@ -177,9 +179,12 @@ const Navbar: React.FC = () => {
           ) : (
             <button
               className={classNames(
-                "w-full rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white md:w-fit",
+                "w-full px-3 py-2 text-left text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white md:w-fit",
               )}
-              onClick={() => setIsLoginFormOpen(true)}
+              onClick={() => {
+                setIsLoginFormOpen(true);
+                setIsOpen(false);
+              }}
             >
               Login
             </button>

@@ -180,7 +180,7 @@ const DataTable = <T extends EditableItem>(props: DataTableProps<T>) => {
   };
 
   return (
-    <div className="flex h-[50svh] flex-col justify-between py-4">
+    <div className="flex flex-col justify-between py-4 md:h-[50svh]">
       <div>
         <div className="overflow-x-auto">
           <div className="grid" style={{ gridTemplateColumns }}>
