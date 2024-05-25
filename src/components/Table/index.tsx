@@ -54,8 +54,10 @@ const DataTable = <T extends EditableItem>(props: DataTableProps<T>) => {
   });
 
   useEffect(() => {
+    console.log(data);
+    console.log(currentPage);
     setPaginationPages(data.slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage));
-    if (data.slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage).length == 0 && currentPage > 0) {
+    if (data.slice(itemsPerPage * (currentPage - 1), itemsPerPage * currentPage).length == 0 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
       params.set("page", JSON.stringify(currentPage - 1));
       const newUrl = `${window.location.pathname}?${params.toString()}`;

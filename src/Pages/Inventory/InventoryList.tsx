@@ -66,7 +66,7 @@ const InventoryList: React.FC = () => {
         <MultiSearchInput columns={columns} setFilteredData={setFilteredData} data={inventoryItems} />
       </div>
       <DataTable
-        data={editableInventoryItems}
+        data={filteredData}
         columns={columns}
         onAdd={handleAddNewItem}
         onEdit={handleSave}
