@@ -49,7 +49,7 @@ const InventoryList: React.FC = () => {
   const handleDelete = (itemId: number) => {
     dispatch(inventoryActions.REMOVE_SHIPMENT({ removeItemId: itemId }));
   };
-  const columns = ["shipment ID", "origin", "destination", "status"];
+  const columns = ["shipment ID", "origin", "destination", "status", "Estimated Delivery"];
   const [filteredData, setFilteredData] = useState<ShipmentItem[]>(shipmentsItems);
   return (
     <div>
@@ -62,6 +62,7 @@ const InventoryList: React.FC = () => {
         columns={columns}
         onAdd={handleAddNewItem}
         onEdit={handleSave}
+        editableFields={["status"]}
         onDelete={handleDelete}
         statusOptions={["In Transit", "Delivered", "Delayed"]}
         initialState={["id", "origin", "destination", "status", "estimatedDelivery"]}

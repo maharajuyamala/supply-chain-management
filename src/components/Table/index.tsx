@@ -18,6 +18,7 @@ interface DataTableProps<T> {
   onDelete: (id: number) => void;
   statusOptions?: string[];
   initialState: string[];
+  editableFields?: string[];
 }
 
 export interface EditableItem {
@@ -26,7 +27,7 @@ export interface EditableItem {
 }
 
 const DataTable = <T extends EditableItem>(props: DataTableProps<T>) => {
-  const { data, columns, onAdd, onEdit, onDelete, statusOptions = [], initialState } = props;
+  const { data, columns, onAdd, onEdit, onDelete, statusOptions = [], initialState, editableFields } = props;
   const itemsPerPage = 5;
   const { isAdmin } = useSelector((state: RootState) => state);
   const columnsCount = isAdmin ? 1 : 0;
@@ -129,6 +130,25 @@ const DataTable = <T extends EditableItem>(props: DataTableProps<T>) => {
 
   const renderCell = (item: MultiItemType, column: string, index: number) => {
     const key = Object.keys(item)[index];
+    if (editableFields) {
+      if (key === "status" && statusOptions.length && editingItemId === item.id) {
+        return (
+          <select
+            name={key as string}
+            value={(editItemValues[key] as string) || ""}
+            onChange={handleInputChange}
+            className="w-full text-left"
+          >
+            {statusOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        );
+      }
+      return <span>{(item as T)[key]}</span>;
+    }
     if (editingItemId === item.id) {
       if (key === "status" && statusOptions.length) {
         return (
